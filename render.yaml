@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: personal-finance-manager
+    env: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/personal-finance-manager-1.0.0.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: finance-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: finance-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: finance-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 86400000
+
+databases:
+  - name: finance-db
+    databaseName: finance_db
+    user: finance_user 
