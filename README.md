@@ -143,11 +143,7 @@ Then access: `GET /api/health`
 
 ---
 
-## 📝 License
 
-This project is licensed under the MIT License.
-
----
 
 ## 🤝 Contributing
 
@@ -157,6 +153,6 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ## 📫 Contact
 
-For questions or support, open an issue or contact [your-email@example.com](mailto:your-email@example.com).
+For questions or support, open an issue or contact [your-email@example.com](adityakumarr6907@gmail.com).
 
 --- 
