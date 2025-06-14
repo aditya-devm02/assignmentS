@@ -15,6 +15,11 @@ A robust Spring Boot application for managing personal finances, including trans
 - **Role-based Security**
 - **Comprehensive Test Coverage** (JUnit, JaCoCo)
 
+## 📸 Screenshots
+
+![Screenshot 1](https://drive.google.com/uc?export=view&id=10F94Cd1b2gEy1Dw87Gh6xeW-Zywr09xa)
+![Screenshot 2](https://drive.google.com/uc?export=view&id=164kdzeeJWcC1KSL62ZyByz8XZzrpEmWv)
+
 ---
 
 ## 🛠️ Tech Stack
