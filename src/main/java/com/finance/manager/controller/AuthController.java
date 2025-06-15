@@ -21,6 +21,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.Cookie;
 
+/**
+ * Controller handling authentication-related operations including user registration,
+ * login, and logout functionality. Manages JWT token generation and validation.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -31,6 +39,15 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtBlacklistService jwtBlacklistService;
 
+    /**
+     * Constructs an AuthController with required dependencies.
+     *
+     * @param userService Service for user-related operations
+     * @param categoryService Service for category-related operations
+     * @param authenticationManager Spring Security's authentication manager
+     * @param jwtTokenProvider Service for JWT token operations
+     * @param jwtBlacklistService Service for managing blacklisted JWT tokens
+     */
     public AuthController(UserService userService,
                           CategoryService categoryService,
                           AuthenticationManager authenticationManager,
@@ -43,16 +60,32 @@ public class AuthController {
         this.jwtBlacklistService = jwtBlacklistService;
     }
 
+    /**
+     * Registers a new user in the system.
+     * Creates default categories for the new user.
+     *
+     * @param request Registration request containing user details
+     * @return ResponseEntity containing registration status and user ID
+     */
     @PostMapping("/register")
-public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-    User user = userService.registerUser(request);
-    categoryService.createDefaultCategories(user);
-    return new ResponseEntity<>(
-            new AuthResponse("User registered successfully", user.getId()),
-            HttpStatus.CREATED
-    );
-}
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        User user = userService.registerUser(request);
+        categoryService.createDefaultCategories(user);
+        return new ResponseEntity<>(
+                new AuthResponse("User registered successfully", user.getId()),
+                HttpStatus.CREATED
+        );
+    }
 
+    /**
+     * Authenticates a user and generates a JWT token.
+     * Sets the token in an HTTP-only cookie for security.
+     *
+     * @param request Login request containing credentials
+     * @param response HTTP response for setting cookies
+     * @return ResponseEntity containing login status, user ID, and JWT token
+     * @throws BadCredentialsException if authentication fails
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         System.out.println("[DEBUG] Login attempt for username: " + request.getUsername());
@@ -80,6 +113,14 @@ public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest
         }
     }
 
+    /**
+     * Logs out a user by invalidating their JWT token.
+     * Clears security context and removes the session cookie.
+     *
+     * @param request HTTP request containing the current session
+     * @param response HTTP response for clearing cookies
+     * @return ResponseEntity containing logout status
+     */
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         // Extract JWT from SESSION cookie

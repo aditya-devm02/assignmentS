@@ -21,6 +21,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
+/**
+ * Spring Security configuration class.
+ * Configures authentication, authorization, and security filters for the application.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -29,6 +37,13 @@ public class SecurityConfig {
     public final JwtBlacklistService jwtBlacklistService;
     public final UserDetailsService userDetailsService;
 
+    /**
+     * Constructs a new SecurityConfig with required dependencies.
+     *
+     * @param jwtAuthenticationFilter Filter for JWT authentication
+     * @param jwtBlacklistService Service for managing blacklisted tokens
+     * @param userDetailsService Service for loading user details
+     */
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           JwtBlacklistService jwtBlacklistService,
                           UserDetailsService userDetailsService) {
@@ -37,16 +52,35 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Creates a BCrypt password encoder bean.
+     *
+     * @return PasswordEncoder instance using BCrypt
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Creates an AuthenticationManager bean.
+     *
+     * @param config Authentication configuration
+     * @return AuthenticationManager instance
+     * @throws Exception if authentication manager creation fails
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Configures the security filter chain with JWT authentication and authorization rules.
+     *
+     * @param http HttpSecurity instance to configure
+     * @return Configured SecurityFilterChain
+     * @throws Exception if security configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -67,6 +101,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Creates a DaoAuthenticationProvider bean for user authentication.
+     *
+     * @return Configured DaoAuthenticationProvider
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -75,6 +114,11 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Configures CORS settings for the application.
+     *
+     * @return CorsConfigurationSource with allowed origins, methods, and headers
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

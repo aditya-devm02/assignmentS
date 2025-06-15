@@ -1,6 +1,195 @@
 # Personal Finance Manager
 
-A robust Spring Boot application for managing personal finances, including transactions, categories, savings goals, and financial reports.
+A comprehensive personal finance management system built with Spring Boot that helps users track their expenses, manage budgets, and achieve their financial goals.
+
+
+ **Live API URL (copy to use):**  
+`https://assignments-2.onrender.com/api`
+
+
+## Features
+
+- User authentication and authorization using JWT
+- Expense tracking and categorization
+- Budget management
+- Financial goal setting and tracking
+- Transaction history and reporting
+- Secure data storage with PostgreSQL
+
+
+## 📸 Screenshots
+
+![Screenshot 1](https://drive.google.com/uc?export=view&id=10F94Cd1b2gEy1Dw87Gh6xeW-Zywr09xa)
+![Screenshot 2](https://drive.google.com/uc?export=view&id=164kdzeeJWcC1KSL62ZyByz8XZzrpEmWv)
+
+## Tech Stack
+
+- Java 17
+- Spring Boot 3.2.3
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- JWT for authentication
+- Maven for dependency management
+- JUnit 5 and Mockito for testing
+- JaCoCo for code coverage
+
+## Prerequisites
+
+- Java 17 or higher
+- Maven 3.6 or higher
+- PostgreSQL 12 or higher
+- Docker (optional, for containerized deployment)
+
+## Setup Instructions
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd personal-finance-manager
+   ```
+
+2. Configure PostgreSQL:
+   - Create a new database named `finance_manager`
+   - Update `application.properties` with your database credentials
+
+3. Build the project:
+   ```bash
+   mvn clean install
+   ```
+
+4. Run the application:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+The application will start on `http://localhost:8080`
+
+## Docker Deployment
+
+1. Build the Docker image:
+   ```bash
+   docker build -t finance-manager .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -p 8080:8080 finance-manager
+   ```
+
+## API Documentation
+
+### Authentication
+
+#### Register User
+- **POST** `/api/auth/register`
+- **Request Body:**
+  ```json
+  {
+    "username": "string",
+    "email": "string",
+    "password": "string"
+  }
+  ```
+
+#### Login
+- **POST** `/api/auth/login`
+- **Request Body:**
+  ```json
+  {
+    "username": "string",
+    "password": "string"
+  }
+  ```
+- **Response:** JWT token
+
+### Expenses
+
+#### Create Expense
+- **POST** `/api/expenses`
+- **Headers:** `Authorization: Bearer <token>`
+- **Request Body:**
+  ```json
+  {
+    "amount": "number",
+    "category": "string",
+    "description": "string",
+    "date": "date"
+  }
+  ```
+
+#### Get Expenses
+- **GET** `/api/expenses`
+- **Headers:** `Authorization: Bearer <token>`
+- **Query Parameters:**
+  - `startDate` (optional)
+  - `endDate` (optional)
+  - `category` (optional)
+
+### Budgets
+
+#### Create Budget
+- **POST** `/api/budgets`
+- **Headers:** `Authorization: Bearer <token>`
+- **Request Body:**
+  ```json
+  {
+    "category": "string",
+    "amount": "number",
+    "period": "string"
+  }
+  ```
+
+#### Get Budgets
+- **GET** `/api/budgets`
+- **Headers:** `Authorization: Bearer <token>`
+
+## Design Decisions
+
+### Architecture
+- Layered architecture following Spring Boot best practices
+- Clear separation of concerns with distinct layers:
+  - Controllers: Handle HTTP requests and responses
+  - Services: Implement business logic
+  - Repositories: Manage data access
+  - Entities: Represent database models
+  - DTOs: Transfer data between layers
+
+### Security
+- JWT-based authentication for stateless security
+- Password encryption using BCrypt
+- Role-based access control
+- Input validation using Spring Validation
+
+### Database
+- PostgreSQL for robust data storage
+- JPA for object-relational mapping
+- Optimized queries with proper indexing
+- Transaction management for data consistency
+
+### Testing
+- Comprehensive unit tests with JUnit 5
+- Integration tests for critical flows
+- Mockito for mocking dependencies
+- JaCoCo for code coverage (minimum 80%)
+
+### Error Handling
+- Global exception handling
+- Custom exception classes for different scenarios
+- Consistent error response format
+- Detailed logging for debugging
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
@@ -15,149 +204,12 @@ A robust Spring Boot application for managing personal finances, including trans
 - **Role-based Security**
 - **Comprehensive Test Coverage** (JUnit, JaCoCo)
 
-## 📸 Screenshots
 
-![Screenshot 1](https://drive.google.com/uc?export=view&id=10F94Cd1b2gEy1Dw87Gh6xeW-Zywr09xa)
-![Screenshot 2](https://drive.google.com/uc?export=view&id=164kdzeeJWcC1KSL62ZyByz8XZzrpEmWv)
-
----
-
-## 🛠️ Tech Stack
-
-- **Java 17**
-- **Spring Boot 3.2.3**
-- **Spring Security**
-- **JWT Authentication**
-- **PostgreSQL**
-- **Maven**
-- **JUnit 5**
-- **JaCoCo** (Code Coverage)
-
----
-
-## 📦 Getting Started (Local Development)
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/assignmentS.git
-   cd assignmentS
-   ```
-
-2. **Configure the Database**
-   - By default, the app uses H2 for local development.
-   - To use PostgreSQL locally, update `src/main/resources/application.properties`:
-     ```properties
-     spring.datasource.url=jdbc:postgresql://localhost:5432/your_db
-     spring.datasource.username=your_user
-     spring.datasource.password=your_password
-     spring.datasource.driver-class-name=org.postgresql.Driver
-     spring.jpa.hibernate.ddl-auto=update
-     ```
-
-3. **Build the Project**
-   ```bash
-   mvn clean install
-   ```
-
-4. **Run the Application**
-   ```bash
-   mvn spring-boot:run
-   ```
-   The API will be available at [http://localhost:8080/api](http://localhost:8080/api)
-
----
-
-## 🧪 Testing
-
-- **Run all tests with coverage:**
-  ```bash
-  mvn clean test jacoco:report
-  ```
-- **View coverage report:**  
-  Open `target/site/jacoco/index.html` in your browser.
-
-- **API Integration Test Script:**  
-  Use the provided test script to verify your deployment:
-  ```bash
-  bash financial_manager_tests.sh http://localhost:8080/api
-  ```
-
----
-
-## 🌐 Deployment (Render.com)
-
-### 1. **Provision a PostgreSQL Database**
-- Create a free PostgreSQL instance on Render.
-
-### 2. **Deploy the App**
-- Connect your GitHub repo to Render.
-- Choose **Web Service** and **Docker** as the environment.
-- Set the following environment variables in Render:
-  ```
-  SPRING_PROFILES_ACTIVE=prod
-  PORT=8080
-  JWT_SECRET=your_jwt_secret
-  JWT_EXPIRATION=86400000
-  SPRING_DATASOURCE_URL=jdbc:postgresql://<host>:<port>/<database>
-  SPRING_DATASOURCE_USERNAME=<username>
-  SPRING_DATASOURCE_PASSWORD=<password>
-  ```
-
-### 3. **Build & Start Commands**
-- **Build Command:** (leave blank for Docker)
-- **Start Command:** (leave blank for Docker)
-
-### 4. **Accessing the API**
-- Your API will be live at:  
-  `https://<your-app-name>.onrender.com/api`
-
----
-
-## 🔗 API Endpoints
-
-| Method | Endpoint                      | Description                  |
-|--------|-------------------------------|------------------------------|
-| POST   | `/api/auth/register`          | Register a new user          |
-| POST   | `/api/auth/login`             | Login and receive JWT        |
-| POST   | `/api/auth/logout`            | Logout (JWT blacklist)       |
-| GET    | `/api/categories`             | List categories              |
-| POST   | `/api/categories`             | Create a category            |
-| DELETE | `/api/categories/{id}`        | Delete a category            |
-| GET    | `/api/transactions`           | List transactions            |
-| POST   | `/api/transactions`           | Create a transaction         |
-| ...    | ...                           | ...                          |
-
-> **Note:** All endpoints are prefixed with `/api`.
-
----
-
-## 🩺 Health Check
-
-To add a health check endpoint, you can create a simple controller:
-```java
-@RestController
-@RequestMapping("/api")
-public class HealthController {
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("OK");
-    }
-}
-```
-Then access: `GET /api/health`
-
----
-
-
-
-## 🤝 Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
 ---
 
 ## 📫 Contact
 
-For questions or support, open an issue or contact [your-email@example.com](adityakumarr6907@gmail.com).
+For questions or support, open an issue or contact [adityakumarr6907@gmail.com](mailto:adityakumarr6907@gmail.com).
 
 --- 

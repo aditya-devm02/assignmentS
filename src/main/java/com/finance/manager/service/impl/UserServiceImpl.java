@@ -10,18 +10,42 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of the UserService interface.
+ * Handles user registration and retrieval operations with password encryption
+ * and default category creation.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoryService categoryService;
 
+    /**
+     * Constructs a UserServiceImpl with required dependencies.
+     *
+     * @param userRepository Repository for user data access
+     * @param passwordEncoder Encoder for password hashing
+     * @param categoryService Service for category operations
+     */
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryService categoryService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.categoryService = categoryService;
     }
 
+    /**
+     * Registers a new user with encrypted password and default categories.
+     * Validates username uniqueness before registration.
+     *
+     * @param request Registration request containing user details
+     * @return The registered user entity
+     * @throws BadRequestException if username already exists
+     */
     @Override
     @Transactional
     public User registerUser(RegisterRequest request) {
@@ -42,6 +66,13 @@ public class UserServiceImpl implements UserService {
         return savedUser;
     }
 
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username The username to search for
+     * @return The user entity
+     * @throws BadRequestException if user is not found
+     */
     @Override
     public User getUserByUsername(String username) {
         System.out.println("[DEBUG] Looking up user by username: " + username);

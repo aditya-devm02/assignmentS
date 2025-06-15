@@ -18,8 +18,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-
-
+/**
+ * JWT Authentication Filter that processes incoming requests to validate JWT tokens.
+ * This filter intercepts all requests and performs JWT-based authentication.
+ * It skips authentication for public endpoints and validates tokens for protected endpoints.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -37,12 +44,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "/auth/logout"
     };
 
+    /**
+     * Constructs a JwtAuthenticationFilter with required dependencies.
+     *
+     * @param tokenProvider Service for JWT token operations
+     * @param userDetailsService Service for loading user details
+     * @param jwtBlacklistService Service for managing blacklisted tokens
+     */
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsService userDetailsService, JwtBlacklistService jwtBlacklistService) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
         this.jwtBlacklistService = jwtBlacklistService;
     }
 
+    /**
+     * Processes each request to validate JWT token and set up authentication.
+     * Skips authentication for public endpoints and validates tokens for protected endpoints.
+     *
+     * @param request The HTTP request
+     * @param response The HTTP response
+     * @param filterChain The filter chain
+     * @throws ServletException if a servlet error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -88,6 +112,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Extracts JWT token from the request.
+     * Checks both Authorization header and SESSION cookie.
+     *
+     * @param request The HTTP request
+     * @return The JWT token if found, null otherwise
+     */
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (org.springframework.util.StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -104,6 +135,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
+    /**
+     * Checks if the given path matches any public endpoint pattern.
+     *
+     * @param path The request path to check
+     * @return true if the path matches a public endpoint, false otherwise
+     */
     private boolean isPublicEndpoint(String path) {
         for (String pattern : PUBLIC_ENDPOINTS) {
             if (pathMatcher.match(pattern, path)) {

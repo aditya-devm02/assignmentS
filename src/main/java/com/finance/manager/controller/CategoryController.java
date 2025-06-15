@@ -14,17 +14,38 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller handling category-related operations including retrieval,
+ * creation, and deletion of transaction categories.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final UserService userService;
 
+    /**
+     * Constructs a CategoryController with required dependencies.
+     *
+     * @param categoryService Service for category-related operations
+     * @param userService Service for user-related operations
+     */
     public CategoryController(CategoryService categoryService, UserService userService) {
         this.categoryService = categoryService;
         this.userService = userService;
     }
 
+    /**
+     * Retrieves all categories for the authenticated user.
+     *
+     * @param userDetails The authenticated user's details
+     * @return ResponseEntity containing list of user's categories
+     * @throws BadRequestException if user is not authenticated
+     */
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAllCategories(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
@@ -38,6 +59,14 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    /**
+     * Creates a new custom category for the authenticated user.
+     *
+     * @param userDetails The authenticated user's details
+     * @param request Category creation request containing category details
+     * @return ResponseEntity containing the created category details
+     * @throws BadRequestException if user is not authenticated
+     */
     @PostMapping
     public ResponseEntity<CategoryResponse> createCustomCategory(@AuthenticationPrincipal UserDetails userDetails,
                                                                 @Valid @RequestBody CategoryRequest request) {
@@ -52,6 +81,14 @@ public class CategoryController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    /**
+     * Deletes a custom category for the authenticated user.
+     *
+     * @param userDetails The authenticated user's details
+     * @param name Name of the category to delete
+     * @return ResponseEntity with success message
+     * @throws BadRequestException if user is not authenticated
+     */
     @DeleteMapping("/{name}")
     public ResponseEntity<?> deleteCustomCategory(@AuthenticationPrincipal UserDetails userDetails,
                                                   @PathVariable String name) {
