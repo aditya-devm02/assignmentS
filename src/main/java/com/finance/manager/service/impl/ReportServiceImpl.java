@@ -15,15 +15,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Implementation of the ReportService interface.
+ * Handles generation of financial reports including monthly and yearly summaries
+ * with income, expense, and savings calculations.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Service
 public class ReportServiceImpl implements ReportService {
     private final TransactionRepository transactionRepository;
 
+    /**
+     * Constructs a ReportServiceImpl with required dependencies.
+     *
+     * @param transactionRepository Repository for transaction data access
+     */
     public ReportServiceImpl(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
+    /**
+     * Generates a monthly financial report for a user.
+     * Calculates total income, expenses, and net savings for the specified month.
+     *
+     * @param user The user to generate the report for
+     * @param year The year of the report
+     * @param month The month of the report (1-12)
+     * @return MonthlyReportResponse containing the report data
+     */
     @Override
     public MonthlyReportResponse getMonthlyReport(User user, int year, int month) {
         LocalDate start = LocalDate.of(year, month, 1);
@@ -51,6 +73,14 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
+    /**
+     * Generates a yearly financial report for a user.
+     * Calculates total income, expenses, and net savings for the specified year.
+     *
+     * @param user The user to generate the report for
+     * @param year The year of the report
+     * @return YearlyReportResponse containing the report data
+     */
     @Override
     public YearlyReportResponse getYearlyReport(User user, int year) {
         LocalDate start = LocalDate.of(year, 1, 1);

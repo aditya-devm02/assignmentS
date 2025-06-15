@@ -20,16 +20,40 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the SavingsGoalService interface.
+ * Handles CRUD operations for savings goals with progress tracking
+ * and transaction-based calculations.
+ *
+ * @author Finance Manager Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Service
 public class SavingsGoalServiceImpl implements SavingsGoalService {
     private final SavingsGoalRepository savingsGoalRepository;
     private final TransactionRepository transactionRepository;
 
+    /**
+     * Constructs a SavingsGoalServiceImpl with required dependencies.
+     *
+     * @param savingsGoalRepository Repository for savings goal data access
+     * @param transactionRepository Repository for transaction data access
+     */
     public SavingsGoalServiceImpl(SavingsGoalRepository savingsGoalRepository, TransactionRepository transactionRepository) {
         this.savingsGoalRepository = savingsGoalRepository;
         this.transactionRepository = transactionRepository;
     }
 
+    /**
+     * Creates a new savings goal for a user.
+     * Validates target date and start date constraints.
+     *
+     * @param user The user creating the goal
+     * @param request Goal creation request containing goal details
+     * @return SavingsGoalResponse containing the created goal details
+     * @throws BadRequestException if dates are invalid
+     */
     @Override
     @Transactional
     public SavingsGoalResponse createGoal(User user, SavingsGoalRequest request) {
@@ -49,12 +73,26 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
         return toResponse(goal, user);
     }
 
+    /**
+     * Retrieves all savings goals for a user.
+     *
+     * @param user The user whose goals to retrieve
+     * @return List of savings goal responses
+     */
     @Override
     public List<SavingsGoalResponse> getAllGoals(User user) {
         return savingsGoalRepository.findByUser(user)
                 .stream().map(goal -> toResponse(goal, user)).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a specific savings goal for a user.
+     *
+     * @param user The user whose goal to retrieve
+     * @param id ID of the goal to retrieve
+     * @return SavingsGoalResponse containing the goal details
+     * @throws ResourceNotFoundException if goal is not found
+     */
     @Override
     public SavingsGoalResponse getGoal(User user, Long id) {
         SavingsGoal goal = savingsGoalRepository.findByIdAndUser(id, user)
@@ -62,6 +100,17 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
         return toResponse(goal, user);
     }
 
+    /**
+     * Updates an existing savings goal.
+     * Validates date constraints and updates specified fields.
+     *
+     * @param user The user updating the goal
+     * @param id ID of the goal to update
+     * @param request Update request containing new values
+     * @return Updated savings goal response
+     * @throws ResourceNotFoundException if goal is not found
+     * @throws BadRequestException if dates are invalid
+     */
     @Override
     @Transactional
     public SavingsGoalResponse updateGoal(User user, Long id, GoalUpdateRequest request) {
@@ -91,6 +140,14 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
         return toResponse(goal, user);
     }
 
+    /**
+     * Deletes a savings goal.
+     * Validates goal exists and user ownership before deletion.
+     *
+     * @param user The user deleting the goal
+     * @param id ID of the goal to delete
+     * @throws ResourceNotFoundException if goal is not found
+     */
     @Override
     @Transactional
     public void deleteGoal(User user, Long id) {
@@ -99,6 +156,14 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
         savingsGoalRepository.delete(goal);
     }
 
+    /**
+     * Converts a SavingsGoal entity to a SavingsGoalResponse DTO.
+     * Calculates progress based on user's transactions.
+     *
+     * @param goal The savings goal entity to convert
+     * @param user The user associated with the goal
+     * @return SavingsGoalResponse containing the goal details and progress
+     */
     private SavingsGoalResponse toResponse(SavingsGoal goal, User user) {
         SavingsGoalResponse response = new SavingsGoalResponse();
         response.setId(goal.getId());
